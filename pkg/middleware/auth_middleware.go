@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"strings"
-
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/strivesolutions/go-gin-framework/pkg/api"
@@ -21,16 +19,12 @@ type AccessResult struct {
 }
 
 func Auth(ctx *gin.Context) {
-	reqToken := ctx.GetHeader("Authorization")
-	tokenSlice := strings.Split(reqToken, " ")
+	reqToken, err := api.BearerToken(ctx)
 
-	if len(tokenSlice) < 2 {
-		logging.Warn("Token missing or invalid for secure route")
+	if err != nil {
 		api.AbortUnauthorized(ctx)
 		return
 	}
-
-	reqToken = tokenSlice[1]
 
 	parser := jwt.Parser{}
 
