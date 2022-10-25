@@ -21,17 +21,6 @@ type AccessResult struct {
 }
 
 func Auth(ctx *gin.Context) {
-
-	// anonymousRoutes := map[string]interface{}{
-	// 	"/healthz": nil,
-	// }
-
-	// _, allowAnonymous := anonymousRoutes[ctx.Request.RequestURI]
-
-	// if allowAnonymous {
-	// 	return
-	// }
-
 	reqToken := ctx.GetHeader("Authorization")
 	tokenSlice := strings.Split(reqToken, " ")
 
@@ -44,9 +33,10 @@ func Auth(ctx *gin.Context) {
 	reqToken = tokenSlice[1]
 
 	parser := jwt.Parser{}
+
 	// Note:
 	// This does not verify the token using the signing signature.
-	// This is safe as long as this request is forwarded from the gateway, and the location for this service is has auth enabled.
+	// This is safe as long as this request is forwarded from a gateway which handles the actual verificiation
 	token, _, err := parser.ParseUnverified(reqToken, jwt.MapClaims{})
 
 	if err != nil {

@@ -11,8 +11,6 @@ import (
 	"github.com/strivesolutions/go-gin-framework/pkg/server"
 )
 
-func mockHandler(ctx *gin.Context) {}
-
 func TestAuthMiddlewareCalledForAuthedRoute(t *testing.T) {
 	authCalled := false
 	fakeAuthMiddleware := func(ctx *gin.Context) {
@@ -29,7 +27,7 @@ func TestAuthMiddlewareCalledForAuthedRoute(t *testing.T) {
 		MethodType: api.GET,
 		Path:       "/",
 		Anonymous:  false,
-		Handler:    mockHandler,
+		Handler:    doNothingRouteHandler,
 	})
 
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -56,7 +54,7 @@ func TestAuthMiddlewareNotCalledForAnonymousRoute(t *testing.T) {
 		MethodType: api.GET,
 		Path:       "/",
 		Anonymous:  true,
-		Handler:    mockHandler,
+		Handler:    doNothingRouteHandler,
 	})
 
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -83,7 +81,7 @@ func TestAuthMiddlewareCalledByDefault(t *testing.T) {
 		MethodType: api.GET,
 		Path:       "/",
 		//Anonymous:  NOT SET,
-		Handler: mockHandler,
+		Handler: doNothingRouteHandler,
 	})
 
 	req, _ := http.NewRequest("GET", "/", nil)
