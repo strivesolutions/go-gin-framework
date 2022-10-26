@@ -62,7 +62,8 @@ func (s *Server) AddRoute(route api.ApiRoute) {
 	handlers := []gin.HandlerFunc{route.Handler}
 
 	if !route.Anonymous {
-		handlers = append(handlers, AuthMiddleware)
+		// prepend the auth middleware
+		handlers = append([]gin.HandlerFunc{AuthMiddleware}, handlers...)
 	}
 
 	switch route.MethodType {

@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -8,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/strivesolutions/go-gin-framework/pkg/api"
+	"github.com/strivesolutions/go-gin-framework/pkg/middleware"
 	"github.com/strivesolutions/go-gin-framework/pkg/server"
 )
 
@@ -90,4 +92,24 @@ func TestAuthMiddlewareCalledByDefault(t *testing.T) {
 	s.Engine.ServeHTTP(w, req)
 
 	assert.True(t, authCalled)
+}
+
+func TestAuthMiddlewareFailureHaltsHandling(t *testing.T) {
+	r := gin.Default()
+
+	responseString := "Should't see me"
+
+	mockHandler := func(ctx *gin.Context) {
+		ctx.String(200, "%s", responseString)
+	}
+
+	r.GET("/", middleware.Auth, mockHandler)
+
+	req, _ := http.NewRequest("GET", "/", nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	responseData, _ := ioutil.ReadAll(w.Body)
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+	assert.NotContains(t, string(responseData), responseString)
 }
