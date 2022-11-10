@@ -9,11 +9,11 @@ import (
 func ReadFileFromRequest(req *http.Request, formKey string) ([]byte, string, error) {
 	file, header, err := req.FormFile(formKey)
 
-	defer file.Close()
-
 	if err != nil {
 		return nil, "", err
 	}
+
+	defer file.Close()
 
 	buf := bytes.NewBuffer(nil)
 	_, err = io.Copy(buf, file)

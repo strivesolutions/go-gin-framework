@@ -58,3 +58,27 @@ func TestTrustFundIdNotSuppliedGives400(t *testing.T) {
 	ioutil.ReadAll(w.Body)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
+
+func TestCanSkipTrustFundCheck(t *testing.T) {
+	s := server.CreateServer(server.Options{
+		NoTrustFundMiddleware: false,
+		HealthChecks:          passingHealthChecks,
+	})
+
+	s.AddRoute(api.ApiRoute{
+		MethodType:         api.GET,
+		Anonymous:          true,
+		Path:               "/",
+		SkipTrustFundCheck: true,
+		Handler: func(ctx *gin.Context) {
+			// empty response
+		},
+	})
+
+	req, _ := http.NewRequest("GET", "/", nil)
+	w := httptest.NewRecorder()
+	s.Engine.ServeHTTP(w, req)
+
+	ioutil.ReadAll(w.Body)
+	assert.Equal(t, http.StatusOK, w.Code)
+}

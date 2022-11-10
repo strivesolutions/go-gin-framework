@@ -69,7 +69,7 @@ func (s *Server) AddRoute(route api.ApiRoute) {
 	handlers := []gin.HandlerFunc{route.Handler}
 
 	// these are in reverse order, by priority. (eg: auth middleware should run first)
-	if !s.options.NoTrustFundMiddleware {
+	if !s.options.NoTrustFundMiddleware && !route.SkipTrustFundCheck {
 		// prepend the trust fund middleware
 		handlers = append([]gin.HandlerFunc{middleware.TrustFundId}, handlers...)
 	}
