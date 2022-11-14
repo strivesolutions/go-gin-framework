@@ -17,6 +17,7 @@ func TestSubscribeHandlerReturns404WhenNotConfigured(t *testing.T) {
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: true,
 		HealthChecks:          passingHealthChecks,
+		PubsubName:            "mock-pubsub",
 	})
 
 	// no subscriptions added
@@ -33,11 +34,12 @@ func TestSubscribeHandlerReturns200WhenConfigured(t *testing.T) {
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: true,
 		HealthChecks:          passingHealthChecks,
+		PubsubName:            "mock-pubsub",
 	})
 
 	s.AddSubscription(api.EventRoute{
 		AlwaysAck: false,
-		Handler:   func(e event.Event) error { return nil },
+		Handler:   func(e event.Event) *api.EventHandlerError { return nil },
 		Subscription: subscribe.Subscription{
 			Routes: subscribe.Routes{
 				Default: "mock/route",

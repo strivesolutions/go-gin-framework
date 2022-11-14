@@ -5,7 +5,12 @@ import (
 	"github.com/strivesolutions/go-gin-framework/pkg/dapr/subscribe"
 )
 
-type EventHandlerFunc func(e event.Event) error
+type EventHandlerError struct {
+	Error    error
+	CanRetry bool
+}
+
+type EventHandlerFunc func(e event.Event) *EventHandlerError
 
 type EventRoute struct {
 	AlwaysAck    bool

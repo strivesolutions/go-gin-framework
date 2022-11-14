@@ -29,14 +29,19 @@ func unwrapEvent(c *gin.Context, alwaysAck bool, handler api.EventHandlerFunc) {
 		return
 	}
 
-	err = handler(e)
+	eventError := handler(e)
 
-	if err != nil {
+	if eventError != nil {
 		if alwaysAck {
-			logging.Warn(fmt.Sprintf("Event handler returned error, but AlwaysAck is enabled. Message will be discarded.\n%v", err))
+			logging.Warn(fmt.Sprintf("Event handler returned error, but AlwaysAck is enabled. Message will be discarded.\n%v", eventError.Error))
 			c.AbortWithStatus(200)
 		} else {
-			c.AbortWithStatus(500)
+			logging.ErrorObject(eventError.Error)
+			if eventError.CanRetry {
+				c.AbortWithStatus(500)
+			} else {
+				c.AbortWithStatus(400)
+			}
 		}
 		return
 	} else {
