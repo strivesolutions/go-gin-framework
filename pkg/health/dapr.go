@@ -3,9 +3,10 @@ package health
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 )
 
-func (result HealthCheckResult) CheckDapr(daprEndpoint string) {
+func (result HealthCheckResult) CheckDapr(daprEndpoint *url.URL) {
 	url := fmt.Sprintf("%s/v1.0/healthz", daprEndpoint)
 
 	resp, err := http.Get(url)
