@@ -12,6 +12,20 @@ type EventHandlerError struct {
 
 type EventHandlerFunc func(e event.Event) *EventHandlerError
 
+func RetriableEventError(err error) *EventHandlerError {
+	return &EventHandlerError{
+		Error:    err,
+		CanRetry: true,
+	}
+}
+
+func FatalEventError(err error) *EventHandlerError {
+	return &EventHandlerError{
+		Error:    err,
+		CanRetry: false,
+	}
+}
+
 type EventRoute struct {
 	AlwaysAck    bool
 	Handler      EventHandlerFunc
