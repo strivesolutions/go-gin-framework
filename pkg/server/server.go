@@ -5,7 +5,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/strivesolutions/go-gin-framework/pkg/api"
-	"github.com/strivesolutions/go-gin-framework/pkg/dapr/subscribe"
 	"github.com/strivesolutions/go-gin-framework/pkg/health"
 	"github.com/strivesolutions/go-gin-framework/pkg/middleware"
 	"github.com/strivesolutions/logger-go/pkg/logging"
@@ -21,7 +20,6 @@ type Server struct {
 type Options struct {
 	NoTrustFundMiddleware bool
 	HealthChecks          health.HealthChecksFunc
-	Subscriptions         subscribe.GetSubscriptions
 }
 
 func CreateServer(options Options) Server {
@@ -37,7 +35,7 @@ func (s *Server) Init(options Options) {
 		s.options = options
 
 		s.addHealthzHandler(options.HealthChecks)
-		s.addDaprSubscribeHandler(options.Subscriptions)
+		s.addDaprSubscribeHandler()
 	}
 }
 
@@ -49,10 +47,8 @@ func (s *Server) addHealthzHandler(healthChecks health.HealthChecksFunc) {
 	}
 }
 
-func (s *Server) addDaprSubscribeHandler(f subscribe.GetSubscriptions) {
-	if f != nil {
-		s.Engine.GET("/dapr/subscribe", func(c *gin.Context) { subscribe.HandleSubscribeRequest(c, f) })
-	}
+func (s *Server) addDaprSubscribeHandler() {
+	s.Engine.GET("/dapr/subscribe", middleware.HandleSubscribeRequest)
 }
 
 func (s *Server) AddMiddleware(middleware gin.HandlerFunc) {

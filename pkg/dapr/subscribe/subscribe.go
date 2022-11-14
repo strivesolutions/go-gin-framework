@@ -1,13 +1,5 @@
 package subscribe
 
-import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
-)
-
-type GetSubscriptions func() []Subscription
-
 type Subscription struct {
 	PubsubName string            `json:"pubsubname"`
 	Topic      string            `json:"topic"`
@@ -23,15 +15,4 @@ type Routes struct {
 type Rule struct {
 	Match string `json:"match"`
 	Path  string `json:"path"`
-}
-
-func HandleSubscribeRequest(ctx *gin.Context, get GetSubscriptions) {
-	if get == nil {
-		ctx.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-
-	result := get()
-
-	ctx.AbortWithStatusJSON(http.StatusOK, result)
 }
