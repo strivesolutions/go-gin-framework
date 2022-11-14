@@ -31,6 +31,9 @@ func unwrapEvent(c *gin.Context, alwaysAck bool, handler api.EventHandlerFunc) {
 
 	eventError := handler(e)
 
+	statusRetry := map[string]string{"status": "RETRY"}
+	statusDrop := map[string]string{"status": "DROP"}
+
 	if eventError != nil {
 		if alwaysAck {
 			logging.Warn(fmt.Sprintf("Event handler returned error, but AlwaysAck is enabled. Message will be discarded.\n%v", eventError.Error))
@@ -38,9 +41,9 @@ func unwrapEvent(c *gin.Context, alwaysAck bool, handler api.EventHandlerFunc) {
 		} else {
 			logging.ErrorObject(eventError.Error)
 			if eventError.CanRetry {
-				c.AbortWithStatus(500)
+				c.AbortWithStatusJSON(500, statusRetry)
 			} else {
-				c.AbortWithStatus(400)
+				c.AbortWithStatusJSON(400, statusDrop)
 			}
 		}
 		return
