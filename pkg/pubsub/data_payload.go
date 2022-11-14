@@ -12,7 +12,7 @@ type DataRequestPayload struct {
 	Data          []byte `json:"data"`
 }
 
-func UnwrapDataRequestPayload[T interface{}](e event.Event, to T) (string, error) {
+func UnwrapDataRequestPayload[T interface{}](e event.Event, to *T) (string, error) {
 	var message DataRequestPayload
 	err := e.DataAs(&message)
 
