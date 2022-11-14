@@ -7,8 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/strivesolutions/go-gin-framework/pkg/api"
 	"github.com/strivesolutions/go-gin-framework/pkg/middleware"
+	"github.com/strivesolutions/go-gin-framework/pkg/pubsub"
 	"github.com/strivesolutions/logger-go/pkg/logging"
 )
+
+func (s *Server) addDaprSubscribeHandler(pubsubName string) {
+	s.pubsubConfigured = pubsubName != ""
+
+	if s.pubsubConfigured {
+		pubsub.PubsubName = pubsubName
+		s.Engine.GET("/dapr/subscribe", middleware.HandleSubscribeRequest)
+	}
+}
 
 func unwrapEvent(c *gin.Context, alwaysAck bool, handler api.EventHandlerFunc) {
 	var e event.Event
@@ -41,6 +51,11 @@ func (s *Server) AddSubscriptions(routes []api.EventRoute) {
 }
 
 func (s *Server) AddSubscription(route api.EventRoute) {
+	if !s.pubsubConfigured {
+		logging.Error("Pubsub name was not supplied when initializing server, subscription routes cannot be added.")
+		return
+	}
+
 	paths := make(map[string]bool, 0)
 
 	if route.Subscription.Routes.Default != "" {

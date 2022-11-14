@@ -7,7 +7,6 @@ import (
 	"github.com/strivesolutions/go-gin-framework/pkg/api"
 	"github.com/strivesolutions/go-gin-framework/pkg/health"
 	"github.com/strivesolutions/go-gin-framework/pkg/middleware"
-	"github.com/strivesolutions/go-gin-framework/pkg/pubsub"
 	"github.com/strivesolutions/logger-go/pkg/logging"
 )
 
@@ -47,15 +46,6 @@ func (s *Server) addHealthzHandler(healthChecks health.HealthChecksFunc) {
 		logging.Fatal("Health checks function is nil")
 	} else {
 		s.Engine.GET("/healthz", func(c *gin.Context) { health.HandleHealthRequest(c, healthChecks) })
-	}
-}
-
-func (s *Server) addDaprSubscribeHandler(pubsubName string) {
-	s.pubsubConfigured = pubsubName != ""
-
-	if s.pubsubConfigured {
-		pubsub.PubsubName = pubsubName
-		s.Engine.GET("/dapr/subscribe", middleware.HandleSubscribeRequest)
 	}
 }
 
