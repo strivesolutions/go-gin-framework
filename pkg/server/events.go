@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/strivesolutions/go-gin-framework/pkg/api"
 	"github.com/strivesolutions/go-gin-framework/pkg/middleware"
+	"github.com/strivesolutions/logger-go/pkg/logging"
 )
 
 func unwrapEvent(c *gin.Context, alwaysAck bool, handler api.EventHandlerFunc) {
@@ -33,6 +34,26 @@ func (s *Server) AddSubscriptions(routes []api.EventRoute) {
 }
 
 func (s *Server) AddSubscription(route api.EventRoute) {
-	s.Engine.POST(route.Path)
+	paths := make(map[string]bool, 0)
+
+	if route.Subscription.Routes.Default != "" {
+		paths[route.Subscription.Routes.Default] = true
+	}
+
+	for _, r := range route.Subscription.Routes.Rules {
+		paths[r.Path] = true
+	}
+
+	if len(paths) == 0 {
+		logging.Warn("No paths are configured for event route, events will be ignored")
+		return
+	}
+
+	for p := range paths {
+		s.Engine.POST(p, func(ctx *gin.Context) {
+			unwrapEvent(ctx, route.AlwaysAck, route.Handler)
+		})
+	}
+
 	middleware.AddSubscription(route.Subscription)
 }

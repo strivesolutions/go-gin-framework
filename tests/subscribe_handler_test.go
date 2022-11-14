@@ -36,10 +36,13 @@ func TestSubscribeHandlerReturns200WhenConfigured(t *testing.T) {
 	})
 
 	s.AddSubscription(api.EventRoute{
-		AlwaysAck:    false,
-		Path:         "fake/sub",
-		Handler:      func(e event.Event) error { return nil },
-		Subscription: subscribe.Subscription{},
+		AlwaysAck: false,
+		Handler:   func(e event.Event) error { return nil },
+		Subscription: subscribe.Subscription{
+			Routes: subscribe.Routes{
+				Default: "mock/route",
+			},
+		},
 	})
 	req, _ := http.NewRequest("GET", "/dapr/subscribe", nil)
 	w := httptest.NewRecorder()

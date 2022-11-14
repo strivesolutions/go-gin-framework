@@ -9,19 +9,6 @@ type EventHandlerFunc func(e event.Event) error
 
 type EventRoute struct {
 	AlwaysAck    bool
-	Path         string
 	Handler      EventHandlerFunc
 	Subscription subscribe.Subscription
 }
-
-// func CreateEventRoute(path string, alwaysAck bool, handler EventHandlerFunc) EventRoute {
-// 	return ApiRoute{
-// 		MethodType:         POST,
-// 		Anonymous:          true,
-// 		SkipTrustFundCheck: true,
-// 		Path:               path,
-// 		Handler: func(c *gin.Context) {
-// 			unwrapEvent(c, alwaysAck, handler)
-// 		},
-// 	}
-// }
