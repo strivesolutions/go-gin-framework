@@ -7,19 +7,22 @@ import (
 	"github.com/strivesolutions/go-gin-framework/pkg/api"
 	"github.com/strivesolutions/go-gin-framework/pkg/health"
 	"github.com/strivesolutions/go-gin-framework/pkg/middleware"
+	"github.com/strivesolutions/go-gin-framework/pkg/pubsub"
 	"github.com/strivesolutions/logger-go/pkg/logging"
 )
 
 var AuthMiddleware = middleware.Auth
 
 type Server struct {
-	Engine  *gin.Engine
-	options Options
+	Engine           *gin.Engine
+	options          Options
+	pubsubConfigured bool
 }
 
 type Options struct {
 	NoTrustFundMiddleware bool
 	HealthChecks          health.HealthChecksFunc
+	PubsubName            string
 }
 
 func CreateServer(options Options) Server {
@@ -35,7 +38,7 @@ func (s *Server) Init(options Options) {
 		s.options = options
 
 		s.addHealthzHandler(options.HealthChecks)
-		s.addDaprSubscribeHandler()
+		s.addDaprSubscribeHandler(options.PubsubName)
 	}
 }
 
@@ -47,8 +50,13 @@ func (s *Server) addHealthzHandler(healthChecks health.HealthChecksFunc) {
 	}
 }
 
-func (s *Server) addDaprSubscribeHandler() {
-	s.Engine.GET("/dapr/subscribe", middleware.HandleSubscribeRequest)
+func (s *Server) addDaprSubscribeHandler(pubsubName string) {
+	s.pubsubConfigured = pubsubName != ""
+
+	if s.pubsubConfigured {
+		pubsub.PubsubName = pubsubName
+		s.Engine.GET("/dapr/subscribe", middleware.HandleSubscribeRequest)
+	}
 }
 
 func (s *Server) AddMiddleware(middleware gin.HandlerFunc) {

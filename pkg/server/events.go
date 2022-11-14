@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+
 	"github.com/cloudevents/sdk-go/v2/event"
 	"github.com/gin-gonic/gin"
 	"github.com/strivesolutions/go-gin-framework/pkg/api"
@@ -19,8 +21,13 @@ func unwrapEvent(c *gin.Context, alwaysAck bool, handler api.EventHandlerFunc) {
 
 	err = handler(e)
 
-	if err != nil && !alwaysAck {
-		c.AbortWithStatus(500)
+	if err != nil {
+		if alwaysAck {
+			logging.Warn(fmt.Sprintf("Event handler returned error, but AlwaysAck is enabled. Message will be discarded.\n%v", err))
+			c.AbortWithStatus(200)
+		} else {
+			c.AbortWithStatus(500)
+		}
 		return
 	} else {
 		c.AbortWithStatus(200)
