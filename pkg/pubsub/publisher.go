@@ -2,6 +2,7 @@ package pubsub
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 
 	dapr "github.com/dapr/go-sdk/client"
@@ -21,9 +22,15 @@ func PublishEvent(ctx context.Context, topic string, event interface{}) error {
 }
 
 func PublishDataPayload(ctx context.Context, topic string, correlationId string, eventData interface{}) error {
+	data, err := json.Marshal(eventData)
+
+	if err != nil {
+		return err
+	}
+
 	event := DataRequestPayload{
 		CorrelationId: correlationId,
-		Data:          eventData,
+		Data:          data,
 	}
 
 	return PublishEvent(ctx, topic, event)
