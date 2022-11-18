@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/strivesolutions/logger-go/pkg/logging"
 )
 
 func withTimeout(check HealthChecker, out chan HealthCheckResult) {
@@ -35,7 +34,6 @@ func runChecks() ServiceHealth {
 		} else {
 			go check.Run(checkResults[i])
 		}
-		logging.Info(fmt.Sprintf("Started check %d", i))
 	}
 
 	for i := 0; i < len(config.Checks); i++ {
