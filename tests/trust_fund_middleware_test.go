@@ -15,7 +15,7 @@ import (
 func TestTrustFundIdSuppliedGives200(t *testing.T) {
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: false,
-		HealthChecks:          passingHealthChecks,
+		HealthChecks:          passingHealthChecks(),
 	})
 
 	s.AddRoute(api.ApiRoute{
@@ -39,7 +39,7 @@ func TestTrustFundIdSuppliedGives200(t *testing.T) {
 func TestTrustFundIdNotSuppliedGives400(t *testing.T) {
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: false,
-		HealthChecks:          passingHealthChecks,
+		HealthChecks:          passingHealthChecks(),
 	})
 
 	s.AddRoute(api.ApiRoute{
@@ -62,7 +62,7 @@ func TestTrustFundIdNotSuppliedGives400(t *testing.T) {
 func TestCanSkipTrustFundCheck(t *testing.T) {
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: false,
-		HealthChecks:          passingHealthChecks,
+		HealthChecks:          passingHealthChecks(),
 	})
 
 	s.AddRoute(api.ApiRoute{

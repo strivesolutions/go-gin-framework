@@ -20,7 +20,7 @@ type Server struct {
 
 type Options struct {
 	NoTrustFundMiddleware bool
-	HealthChecks          health.HealthChecksFunc
+	HealthChecks          health.Config
 	PubsubName            string
 }
 
@@ -41,11 +41,12 @@ func (s *Server) Init(options Options) {
 	}
 }
 
-func (s *Server) addHealthzHandler(healthChecks health.HealthChecksFunc) {
-	if healthChecks == nil {
-		logging.Fatal("Health checks function is nil")
+func (s *Server) addHealthzHandler(config health.Config) {
+	if err := config.Validate(); err != nil {
+		logging.Fatal(fmt.Sprintf("Health checks configuration is invalid: %s", err))
 	} else {
-		s.Engine.GET("/healthz", func(c *gin.Context) { health.HandleHealthRequest(c, healthChecks) })
+		health.SetConfig(config)
+		s.Engine.GET("/healthz", health.HandleHealthRequest)
 	}
 }
 

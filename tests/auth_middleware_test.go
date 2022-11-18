@@ -23,7 +23,7 @@ func TestAuthMiddlewareCalledForAuthedRoute(t *testing.T) {
 
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: true,
-		HealthChecks:          passingHealthChecks,
+		HealthChecks:          passingHealthChecks(),
 	})
 
 	s.AddRoute(api.ApiRoute{
@@ -51,7 +51,7 @@ func TestAuthMiddlewareNotCalledForAnonymousRoute(t *testing.T) {
 
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: true,
-		HealthChecks:          passingHealthChecks,
+		HealthChecks:          passingHealthChecks(),
 	})
 
 	s.AddRoute(api.ApiRoute{
@@ -79,7 +79,7 @@ func TestAuthMiddlewareCalledByDefault(t *testing.T) {
 
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: true,
-		HealthChecks:          passingHealthChecks,
+		HealthChecks:          passingHealthChecks(),
 	})
 
 	s.AddRoute(api.ApiRoute{

@@ -6,8 +6,6 @@ type ServiceHealth struct {
 	Unhealthy   bool                         `json:"-"`
 }
 
-type HealthChecksFunc func() ServiceHealth
-
 func CreateResponse(serviceName string) ServiceHealth {
 	return ServiceHealth{
 		ServiceName: serviceName,

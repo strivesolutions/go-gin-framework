@@ -16,7 +16,7 @@ import (
 func TestSubscribeHandlerReturns404WhenNotConfigured(t *testing.T) {
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: true,
-		HealthChecks:          passingHealthChecks,
+		HealthChecks:          passingHealthChecks(),
 		PubsubName:            "mock-pubsub",
 	})
 
@@ -33,7 +33,7 @@ func TestSubscribeHandlerReturns404WhenNotConfigured(t *testing.T) {
 func TestSubscribeHandlerReturns200WhenConfigured(t *testing.T) {
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: true,
-		HealthChecks:          passingHealthChecks,
+		HealthChecks:          passingHealthChecks(),
 		PubsubName:            "mock-pubsub",
 	})
 

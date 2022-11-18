@@ -7,26 +7,13 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/strivesolutions/go-gin-framework/pkg/health"
 	"github.com/strivesolutions/go-gin-framework/pkg/server"
 )
-
-func passingHealthChecks() health.ServiceHealth {
-	result := health.ServiceHealth{}
-	result.AddResult(health.Ok("mock check"))
-	return result
-}
-
-func failingHealthChecks() health.ServiceHealth {
-	result := health.ServiceHealth{}
-	result.AddResult(health.Unhealthy("mock check", "mock failure"))
-	return result
-}
 
 func TestHealthzHandlerPassGives200(t *testing.T) {
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: true,
-		HealthChecks:          passingHealthChecks,
+		HealthChecks:          passingHealthChecks(),
 	})
 
 	req, _ := http.NewRequest("GET", "/healthz", nil)
@@ -40,7 +27,7 @@ func TestHealthzHandlerPassGives200(t *testing.T) {
 func TestHealthzHandlerFailGives500(t *testing.T) {
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: true,
-		HealthChecks:          failingHealthChecks,
+		HealthChecks:          failingHealthChecks(),
 	})
 
 	req, _ := http.NewRequest("GET", "/healthz", nil)
@@ -54,7 +41,7 @@ func TestHealthzHandlerFailGives500(t *testing.T) {
 func TestHealthzHandlerIgnoresTrustMiddleware(t *testing.T) {
 	s := server.CreateServer(server.Options{
 		NoTrustFundMiddleware: false,
-		HealthChecks:          passingHealthChecks,
+		HealthChecks:          passingHealthChecks(),
 	})
 
 	req, _ := http.NewRequest("GET", "/healthz", nil)
