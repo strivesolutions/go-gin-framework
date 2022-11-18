@@ -10,7 +10,7 @@ func HandleHealthRequest(ctx *gin.Context, runChecks HealthChecksFunc) {
 	result := runChecks()
 
 	var status int
-	if len(result.Errors) > 0 {
+	if result.Unhealthy {
 		status = http.StatusInternalServerError
 	} else {
 		status = http.StatusOK

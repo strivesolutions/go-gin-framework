@@ -4,17 +4,34 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"sync"
+	"time"
 )
 
-func (result HealthCheckResult) CheckDapr(daprEndpoint *url.URL) {
-	url := fmt.Sprintf("%s/v1.0/healthz", daprEndpoint)
-
-	resp, err := http.Get(url)
-
+func CheckDapr(daprEndpoint *url.URL, wg *sync.WaitGroup) HealthCheckResult {
+	defer wg.Done()
 	const checkName = "dapr"
-	if err != nil || resp.StatusCode != http.StatusNoContent {
-		result.AddFailedResult(checkName, resp.Status)
-	} else {
-		result.AddOkResult(checkName)
+
+	result := make(chan HealthCheckResult, 1)
+
+	go func() {
+		url := fmt.Sprintf("%s/v1.0/healthz", daprEndpoint)
+
+		resp, err := http.Get(url)
+
+		const checkName = "dapr"
+		if err != nil || resp.StatusCode != http.StatusNoContent {
+			result <- Unhealthy(checkName, fmt.Sprintf("Response from Dapr was %d", resp.StatusCode))
+		} else {
+			result <- Ok(checkName)
+		}
+		close(result)
+	}()
+
+	select {
+	case <-time.After(5 * time.Second):
+		return Unhealthy(checkName, "Dapr did not respond within 5 seconds")
+	case <-result:
+		return <-result
 	}
 }

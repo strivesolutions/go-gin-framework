@@ -11,15 +11,15 @@ import (
 	"github.com/strivesolutions/go-gin-framework/pkg/server"
 )
 
-func passingHealthChecks() health.HealthCheckResult {
-	result := health.HealthCheckResult{}
-	result.AddOkResult("mock check")
+func passingHealthChecks() health.ServiceHealth {
+	result := health.ServiceHealth{}
+	result.AddResult(health.Ok("mock check"))
 	return result
 }
 
-func failingHealthChecks() health.HealthCheckResult {
-	result := health.HealthCheckResult{}
-	result.AddFailedResult("mock check", "mock failure")
+func failingHealthChecks() health.ServiceHealth {
+	result := health.ServiceHealth{}
+	result.AddResult(health.Unhealthy("mock check", "mock failure"))
 	return result
 }
 
