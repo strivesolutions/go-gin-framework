@@ -9,8 +9,7 @@ func doNothingRouteHandler(ctx *gin.Context) {}
 
 func passingHealthChecks() health.Config {
 	return health.Config{
-		ServiceName:      "mock service",
-		DisableDaprCheck: true,
+		ServiceName: "mock service",
 	}
 }
 
@@ -30,8 +29,7 @@ func (c *failingCheck) Run(out chan health.HealthCheckResult) {
 
 func failingHealthChecks() health.Config {
 	return health.Config{
-		ServiceName:      "mock service",
-		DisableDaprCheck: true,
+		ServiceName: "mock service",
 		Checks: []health.HealthCheck{
 			&failingCheck{},
 		},
