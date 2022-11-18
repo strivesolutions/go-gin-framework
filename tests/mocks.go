@@ -30,7 +30,7 @@ func (c *failingCheck) Run(out chan health.HealthCheckResult) {
 func failingHealthChecks() health.Config {
 	return health.Config{
 		ServiceName: "mock service",
-		Checks: []health.HealthCheck{
+		Checks: []health.HealthChecker{
 			&failingCheck{},
 		},
 	}

@@ -6,7 +6,7 @@ var config Config
 
 type Config struct {
 	ServiceName string
-	Checks      []HealthCheck
+	Checks      []HealthChecker
 }
 
 func SetConfig(c Config) {

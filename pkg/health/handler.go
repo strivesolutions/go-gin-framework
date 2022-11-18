@@ -9,7 +9,7 @@ import (
 	"github.com/strivesolutions/logger-go/pkg/logging"
 )
 
-func withTimeout(check HealthCheck, out chan HealthCheckResult) {
+func withTimeout(check HealthChecker, out chan HealthCheckResult) {
 	defer close(out)
 
 	r := make(chan HealthCheckResult)

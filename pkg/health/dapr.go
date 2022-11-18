@@ -10,7 +10,7 @@ type daprCheck struct {
 	endpoint *url.URL
 }
 
-func CreateDaprHealthCheck(endpoint *url.URL) HealthCheck {
+func CreateDaprHealthCheck(endpoint *url.URL) HealthChecker {
 	return &daprCheck{endpoint: endpoint}
 }
 
