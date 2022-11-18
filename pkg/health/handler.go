@@ -16,7 +16,7 @@ func withTimeout(check HealthChecker, out chan HealthCheckResult) {
 
 	select {
 	case <-time.After(time.Duration(check.TimeoutSeconds()) * time.Second):
-		out <- Unhealthy(check.Name(), fmt.Sprintf("Check did not respond after %d seconds", check.TimeoutSeconds()))
+		out <- Unhealthy(check.Name(), fmt.Sprintf("did not respond after %d seconds", check.TimeoutSeconds()))
 	case checkResult := <-r:
 		out <- checkResult
 	}
