@@ -5,9 +5,8 @@ import "errors"
 var config Config
 
 type Config struct {
-	ServiceName      string
-	Checks           []HealthCheck
-	DisableDaprCheck bool
+	ServiceName string
+	Checks      []HealthCheck
 }
 
 func SetConfig(c Config) {
