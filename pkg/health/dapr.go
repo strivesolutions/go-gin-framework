@@ -15,7 +15,7 @@ func CreateDaprHealthCheck(endpoint *url.URL) HealthChecker {
 }
 
 func (c *daprCheck) Name() string {
-	return "lock-store"
+	return "dapr"
 }
 
 func (c *daprCheck) TimeoutSeconds() int {
@@ -24,15 +24,14 @@ func (c *daprCheck) TimeoutSeconds() int {
 
 func (c *daprCheck) Run(out chan HealthCheckResult) {
 	defer close(out)
-	const checkName = "dapr"
 
 	url := fmt.Sprintf("%s/v1.0/healthz", c.endpoint)
 
 	resp, err := http.Get(url)
 
 	if err != nil || resp.StatusCode != http.StatusNoContent {
-		out <- Unhealthy(checkName, fmt.Sprintf("Response from Dapr was %d", resp.StatusCode))
+		out <- Unhealthy(c.Name(), fmt.Sprintf("Response from Dapr was %d", resp.StatusCode))
 	} else {
-		out <- Ok(checkName)
+		out <- Ok(c.Name())
 	}
 }
