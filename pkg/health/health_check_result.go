@@ -3,7 +3,7 @@ package health
 type HealthCheckResult struct {
 	CheckName    string            `json:"-"`
 	Status       HealthCheckStatus `json:"status"`
-	ErrorDetails string            `json:"errorDetails"`
+	ErrorDetails string            `json:"errorDetails,omitempty"`
 }
 
 func Ok(checkName string) HealthCheckResult {
