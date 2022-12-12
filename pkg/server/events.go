@@ -41,9 +41,9 @@ func unwrapEvent(c *gin.Context, alwaysAck bool, handler api.EventHandlerFunc) {
 		} else {
 			logging.ErrorObject(eventError.Error)
 			if eventError.CanRetry {
-				c.AbortWithStatusJSON(404, statusRetry)
+				c.AbortWithStatusJSON(500, statusRetry)
 			} else {
-				c.AbortWithStatusJSON(400, statusDrop)
+				c.AbortWithStatusJSON(404, statusDrop)
 			}
 		}
 		return
