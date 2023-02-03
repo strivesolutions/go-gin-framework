@@ -19,9 +19,15 @@ type Server struct {
 }
 
 type Options struct {
+	// Deprecated: use NoPlanIdMiddleWare instead
 	NoTrustFundMiddleware bool
+	NoPlanIdMiddleware    bool
 	HealthChecks          health.Config
 	PubsubName            string
+}
+
+func (o Options) UsePlanIdMiddleware() bool {
+	return !o.NoPlanIdMiddleware && !o.NoTrustFundMiddleware
 }
 
 func CreateServer(options Options) Server {
@@ -64,9 +70,10 @@ func (s *Server) AddRoute(route api.ApiRoute) {
 	handlers := []gin.HandlerFunc{route.Handler}
 
 	// these are in reverse order, by priority. (eg: auth middleware should run first)
-	if !s.options.NoTrustFundMiddleware && !route.SkipTrustFundCheck {
+
+	if s.options.UsePlanIdMiddleware() && route.ShouldCheckPlanId() {
 		// prepend the trust fund middleware
-		handlers = append([]gin.HandlerFunc{middleware.TrustFundId}, handlers...)
+		handlers = append([]gin.HandlerFunc{middleware.PlanId}, handlers...)
 	}
 
 	if !route.Anonymous {

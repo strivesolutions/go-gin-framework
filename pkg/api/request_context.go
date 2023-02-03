@@ -11,6 +11,7 @@ import (
 const (
 	claimsKey    = "claims"
 	trustFundKey = "trustFundId"
+	planIdKey    = "planId"
 )
 
 func SetClaims(ctx *gin.Context, claims jwt.MapClaims) {
@@ -27,10 +28,12 @@ func GetClaims(ctx *gin.Context) jwt.MapClaims {
 	}
 }
 
+// Deprecated: Use SetPlanId instead
 func SetTrustFundId(ctx *gin.Context, trustFundId int) {
 	ctx.Set(trustFundKey, trustFundId)
 }
 
+// Deprecated: Use GetPlanId instead
 func GetTrustFundId(ctx *gin.Context) int {
 	trustFundId, exists := ctx.Get(trustFundKey)
 
@@ -39,6 +42,20 @@ func GetTrustFundId(ctx *gin.Context) int {
 	}
 
 	return trustFundId.(int)
+}
+
+func SetPlanId(ctx *gin.Context, planId string) {
+	ctx.Set(planIdKey, planId)
+}
+
+func GetPlanId(ctx *gin.Context) string {
+	planId, exists := ctx.Get(planIdKey)
+
+	if !exists {
+		planId = ""
+	}
+
+	return planId.(string)
 }
 
 func GetOrigin(ctx *gin.Context) string {
@@ -54,4 +71,34 @@ func BearerToken(ctx *gin.Context) (string, error) {
 	} else {
 		return tokenSlice[1], nil
 	}
+}
+
+func UserId(ctx *gin.Context) string {
+	id, exists := GetClaims(ctx)["sub"]
+
+	if !exists {
+		return ""
+	}
+
+	return id.(string)
+}
+
+func Username(ctx *gin.Context) string {
+	userName, exists := GetClaims(ctx)["preferred_username"]
+
+	if !exists {
+		return ""
+	}
+
+	return userName.(string)
+}
+
+func Realm(ctx *gin.Context) string {
+	userName, exists := GetClaims(ctx)["iss"]
+
+	if !exists {
+		return ""
+	}
+
+	return userName.(string)
 }
