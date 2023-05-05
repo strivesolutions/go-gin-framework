@@ -118,3 +118,7 @@ func OkResponse(c *gin.Context, data interface{}) {
 	resp := ApiResponse{Data: data}
 	c.JSON(http.StatusOK, resp)
 }
+
+func NoContentReponse(c *gin.Context) {
+	c.Status(http.StatusNoContent)
+}
