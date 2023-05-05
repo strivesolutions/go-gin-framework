@@ -8,7 +8,7 @@ import (
 )
 
 func storeHealthCheck(name string, out chan health.HealthCheckResult) {
-	_, err := client.GetState(context.Background(), stateStoreName, "healthz", nil)
+	_, err := getClient().GetState(context.Background(), stateStoreName, "healthz", nil)
 
 	if err != nil {
 		out <- health.Unhealthy(name, fmt.Sprint(err))

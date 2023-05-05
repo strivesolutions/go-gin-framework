@@ -14,26 +14,41 @@ var stateStoreName string
 
 func Setup(name string) error {
 	stateStoreName = name
+
+	return createClient()
+}
+
+func Dispose() {
+	if client != nil {
+		client.Close()
+	}
+}
+
+type StoreRead func(ctx context.Context, key string) ([]byte, error)
+type StoreWrite func(ctx context.Context, key string, value []byte, ttlInSeconds int) error
+
+func createClient() error {
 	c, err := dapr.NewClient()
 
 	if err != nil {
 		logging.Error("Error creating Dapr client: %s", err)
 		return err
 	}
-
 	client = c
+
 	return nil
 }
 
-func Dispose() {
-	client.Close()
+func getClient() dapr.Client {
+	if client == nil {
+		createClient()
+	}
+
+	return client
 }
 
-type StoreRead func(ctx context.Context, key string) ([]byte, error)
-type StoreWrite func(ctx context.Context, key string, value []byte, ttlInSeconds int) error
-
 func Read(ctx context.Context, key string) ([]byte, error) {
-	result, err := client.GetState(ctx, stateStoreName, key, nil)
+	result, err := getClient().GetState(ctx, stateStoreName, key, nil)
 
 	if err != nil {
 		logging.Error(fmt.Sprintf("Error reading document: %s", err))
@@ -52,5 +67,5 @@ func Write(ctx context.Context, key string, value []byte, ttlInSeconds int) erro
 		"ttlInSeconds": strconv.Itoa(ttlInSeconds),
 	}
 
-	return client.SaveState(ctx, stateStoreName, key, value, meta)
+	return getClient().SaveState(ctx, stateStoreName, key, value, meta)
 }

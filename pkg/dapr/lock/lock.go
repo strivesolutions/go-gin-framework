@@ -29,6 +29,19 @@ func Setup(name, owner string) error {
 	lockStoreName = name
 	lockOwner = owner
 
+	return createClient()
+}
+
+type LockDefinition interface {
+	AcquireLock() error
+	Unlock() error
+}
+
+type distributedLock struct {
+	lockKey string
+}
+
+func createClient() error {
 	c, err := dapr.NewClient()
 
 	if err != nil {
@@ -40,13 +53,12 @@ func Setup(name, owner string) error {
 	return nil
 }
 
-type LockDefinition interface {
-	AcquireLock() error
-	Unlock() error
-}
+func getClient() dapr.Client {
+	if client == nil {
+		createClient()
+	}
 
-type distributedLock struct {
-	lockKey string
+	return client
 }
 
 func delay(tries int) time.Duration {
@@ -76,7 +88,7 @@ func (l distributedLock) AcquireLock() error {
 			<-time.After(delay(i))
 		}
 
-		resp, err = client.TryLockAlpha1(ctx, lockStoreName, &req)
+		resp, err = getClient().TryLockAlpha1(ctx, lockStoreName, &req)
 
 		if err != nil {
 			break
@@ -107,7 +119,7 @@ func (l distributedLock) Unlock() error {
 	}
 
 	ctx := context.Background()
-	_, err := client.UnlockAlpha1(ctx, lockStoreName, &req)
+	_, err := getClient().UnlockAlpha1(ctx, lockStoreName, &req)
 
 	return err
 }
