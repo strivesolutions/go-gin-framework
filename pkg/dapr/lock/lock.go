@@ -3,10 +3,12 @@ package lock
 import (
 	"context"
 	"errors"
+	"fmt"
 	"math/rand"
 	"time"
 
 	dapr "github.com/dapr/go-sdk/client"
+	"github.com/strivesolutions/logger-go/pkg/logging"
 )
 
 type StoreLock func(lockKey string) (LockDefinition, error)
@@ -30,6 +32,7 @@ func Setup(name, owner string) error {
 	c, err := dapr.NewClient()
 
 	if err != nil {
+		logging.Error("Error creating Dapr client: %s", err)
 		return err
 	}
 
@@ -85,12 +88,12 @@ func (l distributedLock) AcquireLock() error {
 	}
 
 	if err != nil {
-		// logging.ErrorObject(fmt.Errorf("failed to aquire lock: %v", err))
+		logging.ErrorObject(fmt.Errorf("failed to aquire lock: %v", err))
 		return err
 	}
 
 	if !resp.Success {
-		// logging.Warn(fmt.Sprintf("lock response not successful: %v", resp.Success))
+		logging.Warn(fmt.Sprintf("lock response not successful: %v", resp.Success))
 		return errors.New("failed to aquire lock")
 	}
 

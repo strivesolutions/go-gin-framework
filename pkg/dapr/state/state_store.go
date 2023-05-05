@@ -17,6 +17,7 @@ func Setup(name string) error {
 	c, err := dapr.NewClient()
 
 	if err != nil {
+		logging.Error("Error creating Dapr client: %s", err)
 		return err
 	}
 
@@ -35,7 +36,7 @@ func Read(ctx context.Context, key string) ([]byte, error) {
 	result, err := client.GetState(ctx, stateStoreName, key, nil)
 
 	if err != nil {
-		logging.Error(fmt.Sprintf("Error fetching estimate: %s", err))
+		logging.Error(fmt.Sprintf("Error reading document: %s", err))
 		return nil, err
 	}
 
