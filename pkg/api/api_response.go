@@ -119,6 +119,6 @@ func OkResponse(c *gin.Context, data interface{}) {
 	c.JSON(http.StatusOK, resp)
 }
 
-func NoContentReponse(c *gin.Context) {
+func NoContentResponse(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
