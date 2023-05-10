@@ -9,9 +9,10 @@ import (
 )
 
 const (
-	claimsKey    = "claims"
-	trustFundKey = "trustFundId"
-	planIdKey    = "planId"
+	claimsKey        = "claims"
+	trustFundKey     = "trustFundId"
+	planIdKey        = "planId"
+	integrationIdKey = "integrationId"
 )
 
 func SetClaims(ctx *gin.Context, claims jwt.MapClaims) {
@@ -56,6 +57,20 @@ func GetPlanId(ctx *gin.Context) string {
 	}
 
 	return planId.(string)
+}
+
+func SetIntegrationId(ctx *gin.Context, integrationId string) {
+	ctx.Set(integrationIdKey, integrationId)
+}
+
+func GetIntegrationId(ctx *gin.Context) string {
+	integrationId, exists := ctx.Get(integrationIdKey)
+
+	if !exists {
+		integrationId = ""
+	}
+
+	return integrationId.(string)
 }
 
 func GetOrigin(ctx *gin.Context) string {

@@ -20,10 +20,11 @@ type Server struct {
 
 type Options struct {
 	// Deprecated: use NoPlanIdMiddleWare instead
-	NoTrustFundMiddleware bool
-	NoPlanIdMiddleware    bool
-	HealthChecks          health.Config
-	PubsubName            string
+	NoTrustFundMiddleware     bool
+	NoPlanIdMiddleware        bool
+	NoIntegrationIdMiddleware bool
+	HealthChecks              health.Config
+	PubsubName                string
 }
 
 func (o Options) UsePlanIdMiddleware() bool {
@@ -74,6 +75,11 @@ func (s *Server) AddRoute(route api.ApiRoute) {
 	if s.options.UsePlanIdMiddleware() && route.ShouldCheckPlanId() {
 		// prepend the trust fund middleware
 		handlers = append([]gin.HandlerFunc{middleware.PlanId}, handlers...)
+	}
+
+	if !s.options.NoIntegrationIdMiddleware {
+		// prepend the integration id middleware
+		handlers = append([]gin.HandlerFunc{middleware.IntegrationId}, handlers...)
 	}
 
 	if !route.Anonymous {

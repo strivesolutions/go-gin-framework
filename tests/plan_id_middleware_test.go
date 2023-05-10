@@ -14,8 +14,9 @@ import (
 
 func TestPlanIdIdSuppliedGives200(t *testing.T) {
 	s := server.CreateServer(server.Options{
-		NoPlanIdMiddleware: false,
-		HealthChecks:       passingHealthChecks(),
+		NoPlanIdMiddleware:        false,
+		NoIntegrationIdMiddleware: true,
+		HealthChecks:              passingHealthChecks(),
 	})
 
 	s.AddRoute(api.ApiRoute{
@@ -38,8 +39,9 @@ func TestPlanIdIdSuppliedGives200(t *testing.T) {
 
 func TestPlanIdNotSuppliedGives400(t *testing.T) {
 	s := server.CreateServer(server.Options{
-		NoPlanIdMiddleware: false,
-		HealthChecks:       passingHealthChecks(),
+		NoPlanIdMiddleware:        false,
+		NoIntegrationIdMiddleware: true,
+		HealthChecks:              passingHealthChecks(),
 	})
 
 	s.AddRoute(api.ApiRoute{
@@ -61,8 +63,9 @@ func TestPlanIdNotSuppliedGives400(t *testing.T) {
 
 func TestCanSkipPlanIdCheckOnRoute(t *testing.T) {
 	s := server.CreateServer(server.Options{
-		NoPlanIdMiddleware: false,
-		HealthChecks:       passingHealthChecks(),
+		NoPlanIdMiddleware:        false,
+		NoIntegrationIdMiddleware: true,
+		HealthChecks:              passingHealthChecks(),
 	})
 
 	s.AddRoute(api.ApiRoute{

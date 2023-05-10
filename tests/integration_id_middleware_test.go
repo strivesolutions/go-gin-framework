@@ -12,12 +12,35 @@ import (
 	"github.com/strivesolutions/go-gin-framework/pkg/server"
 )
 
-// This file tests the phase 1 backward compatibility plan w/ numeric trust fund ids
-
-func TestCanDisablePlanIdMiddlewareWithTrustFundOption(t *testing.T) {
+func TestIntegrationIdSuppliedGives200(t *testing.T) {
 	s := server.CreateServer(server.Options{
-		NoTrustFundMiddleware:     true,
-		NoIntegrationIdMiddleware: true,
+		NoPlanIdMiddleware:        true,
+		NoIntegrationIdMiddleware: false,
+		HealthChecks:              passingHealthChecks(),
+	})
+
+	s.AddRoute(api.ApiRoute{
+		MethodType: api.GET,
+		Anonymous:  true,
+		Path:       "/",
+		Handler: func(ctx *gin.Context) {
+			// empty response
+		},
+	})
+
+	req, _ := http.NewRequest("GET", "/", nil)
+	req.Header.Add("X-Integration-Id", "1234")
+	w := httptest.NewRecorder()
+	s.Engine.ServeHTTP(w, req)
+
+	ioutil.ReadAll(w.Body)
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+func TestIntegrationIdNotSuppliedGives400(t *testing.T) {
+	s := server.CreateServer(server.Options{
+		NoPlanIdMiddleware:        true,
+		NoIntegrationIdMiddleware: false,
 		HealthChecks:              passingHealthChecks(),
 	})
 
@@ -35,28 +58,27 @@ func TestCanDisablePlanIdMiddlewareWithTrustFundOption(t *testing.T) {
 	s.Engine.ServeHTTP(w, req)
 
 	ioutil.ReadAll(w.Body)
-	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 
-func TestNumericPlanIdIdSetsTrustId(t *testing.T) {
+func TestCanSkipIntegrationIdCheckOnRoute(t *testing.T) {
 	s := server.CreateServer(server.Options{
-		NoPlanIdMiddleware:        false,
+		NoPlanIdMiddleware:        true,
 		NoIntegrationIdMiddleware: true,
 		HealthChecks:              passingHealthChecks(),
 	})
 
 	s.AddRoute(api.ApiRoute{
-		MethodType: api.GET,
-		Anonymous:  true,
-		Path:       "/",
+		MethodType:    api.GET,
+		Anonymous:     true,
+		Path:          "/",
+		SkipPlanCheck: true,
 		Handler: func(ctx *gin.Context) {
-			trustId := api.GetTrustFundId(ctx)
-			assert.NotEmpty(t, trustId)
+			// empty response
 		},
 	})
 
 	req, _ := http.NewRequest("GET", "/", nil)
-	req.Header.Add("X-Plan-Id", "1234")
 	w := httptest.NewRecorder()
 	s.Engine.ServeHTTP(w, req)
 
@@ -64,25 +86,28 @@ func TestNumericPlanIdIdSetsTrustId(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 }
 
-func TestTrustFundIdSetsPlanId(t *testing.T) {
+func TestIntegrationIdCanBeRead(t *testing.T) {
 	s := server.CreateServer(server.Options{
-		NoPlanIdMiddleware:        false,
-		NoIntegrationIdMiddleware: true,
+		NoPlanIdMiddleware:        true,
+		NoIntegrationIdMiddleware: false,
 		HealthChecks:              passingHealthChecks(),
 	})
+
+	expectedIntegrationId := "1234"
 
 	s.AddRoute(api.ApiRoute{
 		MethodType: api.GET,
 		Anonymous:  true,
 		Path:       "/",
 		Handler: func(ctx *gin.Context) {
-			planId := api.GetPlanId(ctx)
-			assert.NotEmpty(t, planId)
+			actualIntegrationId := api.GetIntegrationId(ctx)
+			assert.Equal(t, expectedIntegrationId, actualIntegrationId)
 		},
 	})
 
 	req, _ := http.NewRequest("GET", "/", nil)
-	req.Header.Add("X-Trust-Fund-Id", "1234")
+	req.Header.Add("X-Integration-Id", expectedIntegrationId)
+
 	w := httptest.NewRecorder()
 	s.Engine.ServeHTTP(w, req)
 
