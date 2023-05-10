@@ -39,7 +39,7 @@ func createClient() error {
 	return nil
 }
 
-func getClient() dapr.Client {
+func GetClient() dapr.Client {
 	if client == nil {
 		createClient()
 	}
@@ -48,7 +48,7 @@ func getClient() dapr.Client {
 }
 
 func Read(ctx context.Context, key string) ([]byte, error) {
-	result, err := getClient().GetState(ctx, stateStoreName, key, nil)
+	result, err := GetClient().GetState(ctx, stateStoreName, key, nil)
 
 	if err != nil {
 		logging.Error(fmt.Sprintf("Error reading document: %s", err))
@@ -67,5 +67,9 @@ func Write(ctx context.Context, key string, value []byte, ttlInSeconds int) erro
 		"ttlInSeconds": strconv.Itoa(ttlInSeconds),
 	}
 
-	return getClient().SaveState(ctx, stateStoreName, key, value, meta)
+	return GetClient().SaveState(ctx, stateStoreName, key, value, meta)
+}
+
+func Delete(ctx context.Context, key string) error {
+	return GetClient().DeleteState(ctx, stateStoreName, key, nil)
 }

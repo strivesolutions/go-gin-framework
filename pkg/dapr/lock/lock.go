@@ -53,7 +53,7 @@ func createClient() error {
 	return nil
 }
 
-func getClient() dapr.Client {
+func GetClient() dapr.Client {
 	if client == nil {
 		createClient()
 	}
@@ -88,7 +88,7 @@ func (l distributedLock) AcquireLock() error {
 			<-time.After(delay(i))
 		}
 
-		resp, err = getClient().TryLockAlpha1(ctx, lockStoreName, &req)
+		resp, err = GetClient().TryLockAlpha1(ctx, lockStoreName, &req)
 
 		if err != nil {
 			break
@@ -119,7 +119,7 @@ func (l distributedLock) Unlock() error {
 	}
 
 	ctx := context.Background()
-	_, err := getClient().UnlockAlpha1(ctx, lockStoreName, &req)
+	_, err := GetClient().UnlockAlpha1(ctx, lockStoreName, &req)
 
 	return err
 }
