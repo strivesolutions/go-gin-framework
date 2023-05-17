@@ -77,7 +77,7 @@ func (s *Server) AddRoute(route api.ApiRoute) {
 		handlers = append([]gin.HandlerFunc{middleware.PlanId}, handlers...)
 	}
 
-	if !s.options.NoIntegrationIdMiddleware {
+	if !s.options.NoIntegrationIdMiddleware && !route.SkipIntegrationCheck {
 		// prepend the integration id middleware
 		handlers = append([]gin.HandlerFunc{middleware.IntegrationId}, handlers...)
 	}

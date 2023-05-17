@@ -6,10 +6,11 @@ type ApiRoute struct {
 	MethodType MethodType
 	Anonymous  bool
 	// Deprecated: Use SkipPlanCheck instead
-	SkipTrustFundCheck bool
-	SkipPlanCheck      bool
-	Path               string
-	Handler            gin.HandlerFunc
+	SkipTrustFundCheck   bool
+	SkipPlanCheck        bool
+	SkipIntegrationCheck bool
+	Path                 string
+	Handler              gin.HandlerFunc
 }
 
 func (a ApiRoute) ShouldCheckPlanId() bool {

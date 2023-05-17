@@ -61,7 +61,7 @@ func TestIntegrationIdNotSuppliedGives400(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 
-func TestCanSkipIntegrationIdCheckOnRoute(t *testing.T) {
+func TestCanSkipIntegrationIdCheckOnService(t *testing.T) {
 	s := server.CreateServer(server.Options{
 		NoPlanIdMiddleware:        true,
 		NoIntegrationIdMiddleware: true,
@@ -107,6 +107,31 @@ func TestIntegrationIdCanBeRead(t *testing.T) {
 
 	req, _ := http.NewRequest("GET", "/", nil)
 	req.Header.Add("X-Integration-Id", expectedIntegrationId)
+
+	w := httptest.NewRecorder()
+	s.Engine.ServeHTTP(w, req)
+
+	ioutil.ReadAll(w.Body)
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+func TestIntegrationIdCheckCanBeSkipped(t *testing.T) {
+	s := server.CreateServer(server.Options{
+		NoPlanIdMiddleware:        true,
+		NoIntegrationIdMiddleware: false,
+		HealthChecks:              passingHealthChecks(),
+	})
+
+	s.AddRoute(api.ApiRoute{
+		MethodType:           api.GET,
+		Anonymous:            true,
+		SkipIntegrationCheck: true,
+		Path:                 "/",
+		Handler: func(ctx *gin.Context) {
+		},
+	})
+
+	req, _ := http.NewRequest("GET", "/", nil)
 
 	w := httptest.NewRecorder()
 	s.Engine.ServeHTTP(w, req)
