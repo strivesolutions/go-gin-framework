@@ -14,7 +14,7 @@ type ApiError struct {
 	Message string `json:"message"`
 	Path    string `json:"path"`
 	Code    int    `json:"code"`
-	Key     string `json:"key"`
+	Detail  string `json:"detail"`
 }
 
 type ApiResponse struct {
@@ -38,7 +38,7 @@ func NewError(message, path string, statusCode int) *ApiError {
 	return &result
 }
 
-func NewErrorCode(message, path string, err error, key string) *ApiError {
+func NewErrorCode(message, path string, err error) *ApiError {
 	result := ApiError{}
 	result.Message = message
 	result.Path = path
@@ -50,20 +50,16 @@ func NewErrorCode(message, path string, err error, key string) *ApiError {
 	}
 
 	result.Code = code
-	result.Key = key
+	result.Detail = err.Error()
 	return &result
 }
 
 func AbortBadRequest(c *gin.Context, err error) {
-	AbortBadRequestWithKey(c, err, "")
-}
-
-func AbortBadRequestWithKey(c *gin.Context, err error, key string) {
 	logging.Error(fmt.Sprintf("%s: %s", c.Request.RequestURI, err))
 
 	resp := ApiResponse{}
 
-	resp.Error = NewErrorCode("Bad Request", c.Request.RequestURI, err, key)
+	resp.Error = NewErrorCode("Bad Request", c.Request.RequestURI, err)
 
 	c.JSON(http.StatusBadRequest, resp)
 	c.Abort()
