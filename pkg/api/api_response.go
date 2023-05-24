@@ -43,9 +43,9 @@ func NewErrorCode(message, path string, err error) *ApiError {
 	result.Message = message
 	result.Path = path
 
-	code, err := strconv.Atoi(fmt.Sprint(err))
+	code, codeErr := strconv.Atoi(fmt.Sprint(err))
 
-	if err != nil {
+	if codeErr != nil {
 		code = 400
 	}
 
