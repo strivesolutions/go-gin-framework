@@ -22,6 +22,10 @@ func PublishEvent(ctx context.Context, topic string, event interface{}) error {
 }
 
 func PublishDataPayload(ctx context.Context, topic string, correlationId string, eventData interface{}) error {
+	return PublishDataPayloadForUser(ctx, "", topic, correlationId, eventData)
+}
+
+func PublishDataPayloadForUser(ctx context.Context, userIdToken, topic, correlationId string, eventData interface{}) error {
 	data, err := json.Marshal(eventData)
 
 	if err != nil {
@@ -30,6 +34,7 @@ func PublishDataPayload(ctx context.Context, topic string, correlationId string,
 
 	event := DataRequestPayload{
 		CorrelationId: correlationId,
+		UserIdToken:   userIdToken,
 		Data:          data,
 	}
 
