@@ -40,8 +40,6 @@ func createClient() error {
 }
 
 func GetClient() dapr.Client {
-	logging.Info(fmt.Sprintf("Getting Dapr client: %v", client))
-
 	if client == nil {
 		logging.Info("Lazy loading Dapr client")
 		createClient()
