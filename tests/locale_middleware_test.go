@@ -31,7 +31,7 @@ func TestLocaleMiddleware_WhenLocaleCodeIsSet_ShouldReturn200(t *testing.T) {
 	})
 
 	req, _ := http.NewRequest("GET", "/", nil)
-	req.Header.Add("Accept-Language", "en")
+	req.Header.Add("X-Accept-Language", "en")
 	w := httptest.NewRecorder()
 	s.Engine.ServeHTTP(w, req)
 
@@ -86,7 +86,7 @@ func TestLocaleMiddleware_WhenLocaleIsNotSupported_ShouldReturn200(t *testing.T)
 	})
 
 	req, _ := http.NewRequest("GET", "/", nil)
-	req.Header.Add("Accept-Language", "es")
+	req.Header.Add("X-Accept-Language", "es")
 	w := httptest.NewRecorder()
 	s.Engine.ServeHTTP(w, req)
 

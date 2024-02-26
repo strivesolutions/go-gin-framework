@@ -7,7 +7,7 @@ import (
 )
 
 // DetectLanguage middleware sets the locale code in the request context
-// from the Accept-Language header.
+// from the X-Accept-Language header.
 // Making it easier to share the locale code across the application.
 
 // supported locales
@@ -17,7 +17,7 @@ var supportedLocales = map[string]bool{
 }
 
 func DetectLanguage(ctx *gin.Context) {
-	value := ctx.GetHeader("Accept-Language")
+	value := ctx.GetHeader("X-Accept-Language")
 
 	if value == "" {
 		value = "en"
