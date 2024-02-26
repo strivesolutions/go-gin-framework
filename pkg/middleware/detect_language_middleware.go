@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/strivesolutions/go-gin-framework/pkg/api"
 	"github.com/strivesolutions/logger-go/pkg/logging"
@@ -16,16 +18,18 @@ var supportedLocales = map[string]bool{
 	"fr": true,
 }
 
+var defaultLocale = "en"
+
 func DetectLanguage(ctx *gin.Context) {
-	value := ctx.GetHeader("X-Accept-Language")
+	value := strings.ToLower(ctx.GetHeader("X-Accept-Language"))
 
 	if value == "" {
-		value = "en"
+		value = defaultLocale
 	}
 
 	if _, ok := supportedLocales[value]; !ok {
-		logging.Info("Unsupported laguage code: " + value)
-		value = "en"
+		logging.Info("Unsupported language code: " + value)
+		value = defaultLocale
 	}
 
 	api.SetLocaleCode(ctx, value)
