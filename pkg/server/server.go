@@ -87,6 +87,8 @@ func (s *Server) AddRoute(route api.ApiRoute) {
 		handlers = append([]gin.HandlerFunc{AuthMiddleware}, handlers...)
 	}
 
+	handlers = append([]gin.HandlerFunc{middleware.DetectLanguage}, handlers...)
+
 	switch route.MethodType {
 	case api.GET:
 		s.Engine.GET(route.Path, handlers...)

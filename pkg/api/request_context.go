@@ -13,6 +13,7 @@ const (
 	trustFundKey     = "trustFundId"
 	planIdKey        = "planId"
 	integrationIdKey = "integrationId"
+	localeCodeKey    = "localeCode"
 )
 
 func SetClaims(ctx *gin.Context, claims jwt.MapClaims) {
@@ -116,4 +117,18 @@ func Realm(ctx *gin.Context) string {
 	}
 
 	return userName.(string)
+}
+
+func SetLocaleCode(ctx *gin.Context, localeCode string) {
+	ctx.Set(localeCodeKey, localeCode)
+}
+
+func GetLocaleCode(ctx *gin.Context) string {
+	translation, exists := ctx.Get(localeCodeKey)
+
+	if !exists {
+		translation = ""
+	}
+
+	return translation.(string)
 }
