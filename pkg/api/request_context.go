@@ -132,3 +132,27 @@ func GetLocaleCode(ctx *gin.Context) string {
 
 	return translation.(string)
 }
+
+func SetPlanName(ctx *gin.Context, planName string) {
+	ctx.Set("planName", planName)
+}
+
+func GetPlanName(ctx *gin.Context) string {
+	planName, exists := ctx.Get("planName")
+
+	if !exists {
+		planName = ""
+	}
+
+	return planName.(string)
+}
+
+func GetMemberId(ctx *gin.Context) string {
+	memberId, exists := GetClaims(ctx)["member_id"]
+
+	if !exists {
+		return ""
+	}
+
+	return memberId.(string)
+}

@@ -74,7 +74,7 @@ func (s *Server) AddRoute(route api.ApiRoute) {
 
 	if s.options.UsePlanIdMiddleware() && route.ShouldCheckPlanId() {
 		// prepend the trust fund middleware
-		handlers = append([]gin.HandlerFunc{middleware.PlanId}, handlers...)
+		handlers = append([]gin.HandlerFunc{middleware.Plan}, handlers...)
 	}
 
 	if !s.options.NoIntegrationIdMiddleware && !route.SkipIntegrationCheck {
