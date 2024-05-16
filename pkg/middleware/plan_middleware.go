@@ -14,9 +14,10 @@ import (
 //			 At least one of the headers is required.
 // Phase 2 - Trust fund references disappear and plan ID header is required.
 
-func PlanId(ctx *gin.Context) {
-	planId(ctx)
-	trustFundId(ctx)
+func Plan(ctx *gin.Context) {
+	getPlanId(ctx)
+	getTrustFundId(ctx)
+	getPlanName(ctx)
 
 	planId := api.GetPlanId(ctx)
 	trustFundId := api.GetTrustFundId(ctx)
@@ -43,14 +44,21 @@ func PlanId(ctx *gin.Context) {
 	}
 }
 
-func planId(ctx *gin.Context) {
+func getPlanId(ctx *gin.Context) {
 	value := ctx.GetHeader("X-Plan-Id")
 
 	api.SetPlanId(ctx, value)
 }
 
+func getPlanName(ctx *gin.Context) {
+	value := ctx.GetHeader("X-Plan-Name")
+
+	api.SetPlanName(ctx, value)
+
+}
+
 // Deprecated: to be replaced by PlanId
-func trustFundId(ctx *gin.Context) {
+func getTrustFundId(ctx *gin.Context) {
 
 	value := ctx.GetHeader("X-Trust-Fund-Id")
 
