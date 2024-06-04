@@ -53,7 +53,9 @@ func NewErrorCode(message, path string, err error) *ApiError {
 func HandleError(c *gin.Context, err striveexceptions.Exception) {
 	detail := err.Details
 	if detail == "" {
-		detail = err.FullError.Error()
+		if err.FullError != nil {
+			detail = err.FullError.Error()
+		}
 	}
 
 	resp := ApiResponse{
