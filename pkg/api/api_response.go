@@ -54,12 +54,13 @@ func HandleError(c *gin.Context, err Exception) {
 		Error: &ApiError{
 			Message: err.Message,
 			Code:    err.Code,
+			StatusCode: err.Code,
 			Path:    c.Request.RequestURI,
 			Detail:  err.Detail,
 		},
 	}
 
-	c.JSON(resp.Error.Code, resp)
+	c.JSON(resp.Error.StatusCode, resp)
 	c.Abort()
 }
 
