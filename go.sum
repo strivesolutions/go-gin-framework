@@ -78,6 +78,8 @@ github.com/stretchr/testify v1.8.2/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o
 github.com/stretchr/testify v1.8.3/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
+github.com/strivesolutions/go-strive-utils v1.1.1 h1:CAliGv57Q+4gS6xRXGkkxRN4gQ4I0QZ4qq7zBu+bC8E=
+github.com/strivesolutions/go-strive-utils v1.1.1/go.mod h1:1vjfh5/1vFiqe3caKmQeU7/mdybLKZZtu3E4XOCv6nM=
 github.com/strivesolutions/logger-go v0.0.0-20221024171836-eb014fb84110 h1:BrS3Dr+2GG8kl8Cb0NZghI1IDgtKCjcd6hr5ki1mMQg=
 github.com/strivesolutions/logger-go v0.0.0-20221024171836-eb014fb84110/go.mod h1:lwPTvanH+0AnOL9XL6bpCuol02fgLQFay7lTGdwMItc=
 github.com/twitchyliquid64/golang-asm v0.15.1 h1:SU5vSMR7hnwNxj24w34ZyCi/FmDZTkS4MhqMhdFk5YI=

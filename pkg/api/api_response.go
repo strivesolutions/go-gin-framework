@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/strivesolutions/go-gin-framework/pkg/serialization"
+	"github.com/strivesolutions/go-strive-utils/pkg/striveexceptions"
 	"github.com/strivesolutions/logger-go/pkg/logging"
 )
 
@@ -49,14 +50,14 @@ func NewErrorCode(message, path string, err error) *ApiError {
 	return &result
 }
 
-func HandleError(c *gin.Context, err Exception) {
+func HandleError(c *gin.Context, err striveexceptions.Exception) {
 	resp := ApiResponse{
 		Error: &ApiError{
 			Message: err.Message,
 			Code:    err.Code,
 			StatusCode: err.Code,
 			Path:    c.Request.RequestURI,
-			Detail:  err.Detail,
+			Detail:  err.Details,
 		},
 	}
 
