@@ -10,12 +10,6 @@ import (
 	"github.com/strivesolutions/logger-go/pkg/logging"
 )
 
-type ApiError struct {
-	Message string `json:"message"`
-	Path    string `json:"path"`
-	Code    int    `json:"code"`
-	Detail  string `json:"detail"`
-}
 
 type ApiResponse struct {
 	Data  interface{} `json:"data"`
@@ -30,6 +24,7 @@ func (r ApiResponse) Serialize() (*string, *string) {
 	return serialization.ToJson(r)
 }
 
+// Deprecated: Will be removed in future versions
 func NewError(message, path string, statusCode int) *ApiError {
 	result := ApiError{}
 	result.Message = message
@@ -54,6 +49,22 @@ func NewErrorCode(message, path string, err error) *ApiError {
 	return &result
 }
 
+func HandleError(c *gin.Context, err Exception) {
+	resp := ApiResponse{
+		Error: &ApiError{
+			Message: err.Message,
+			Code:    err.Code,
+			StatusCode: err.Code,
+			Path:    c.Request.RequestURI,
+			Detail:  err.Detail,
+		},
+	}
+
+	c.JSON(resp.Error.StatusCode, resp)
+	c.Abort()
+}
+
+// Deprecated: Use HandleError instead
 func AbortBadRequest(c *gin.Context, err error) {
 	logging.Error(fmt.Sprintf("%s: %s", c.Request.RequestURI, err))
 
