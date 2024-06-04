@@ -8,7 +8,9 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/stretchr/testify v1.8.4
+	github.com/strivesolutions/go-strive-utils v1.1.1
 	github.com/strivesolutions/logger-go v0.0.0-20221024171836-eb014fb84110
+
 )
 
 require (

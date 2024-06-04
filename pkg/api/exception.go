@@ -8,10 +8,3 @@ type ApiError struct {
 	Detail  string `json:"detail"`
 }
 
-type Exception struct {
-	Code int `json:"code"`
-	Message string `json:"message"`
-	Detail string `json:"detail"`
-}
-
-
