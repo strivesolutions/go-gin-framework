@@ -69,7 +69,6 @@ func HandleError(c *gin.Context, err striveexceptions.Exception) {
 	c.Abort()
 }
 
-// Deprecated: Use HandleError instead
 func AbortBadRequest(c *gin.Context, err error) {
 	logging.Error(fmt.Sprintf("%s: %s", c.Request.RequestURI, err))
 
