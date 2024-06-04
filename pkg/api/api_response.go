@@ -51,17 +51,21 @@ func NewErrorCode(message, path string, err error) *ApiError {
 }
 
 func HandleError(c *gin.Context, err striveexceptions.Exception) {
+	detail := err.Details
+	if detail == "" {
+		detail = err.FullError.Error()
+	}
+
 	resp := ApiResponse{
 		Error: &ApiError{
 			Message: err.Message,
 			Code:    err.Code,
-			StatusCode: err.Code,
 			Path:    c.Request.RequestURI,
-			Detail:  err.Details,
+			Detail:  detail ,
 		},
 	}
 
-	c.JSON(resp.Error.StatusCode, resp)
+	c.JSON(err.Code, resp)
 	c.Abort()
 }
 
