@@ -11,7 +11,6 @@ import (
 	"github.com/strivesolutions/logger-go/pkg/logging"
 )
 
-
 type ApiResponse struct {
 	Data  interface{} `json:"data"`
 	Error *ApiError   `json:"error"`
@@ -63,11 +62,11 @@ func HandleError(c *gin.Context, err striveexceptions.Exception) {
 			Message: err.Message,
 			Code:    err.Code,
 			Path:    c.Request.RequestURI,
-			Detail:  detail ,
+			Detail:  detail,
 		},
 	}
 
-	c.JSON(err.Code, resp)
+	c.JSON(err.StatusCode, resp)
 	c.Abort()
 }
 
